@@ -1,5 +1,2 @@
-# Normalize text files to LF in repository
 * text=auto eol=lf
-
-# Lockfiles must be LF
 yarn.lock text eol=lf
