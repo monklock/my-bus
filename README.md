@@ -1,3 +1,3 @@
 # My bus (my-bus)
 
-Real-time bus arrival tracking mobile application.
+Real-time bus arrival tracking mobile application.  
