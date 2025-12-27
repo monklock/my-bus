@@ -1,4 +1,4 @@
 # Shedule bus (mybus)
 
-Shedule bus
+Shedule bus mobile app
 
