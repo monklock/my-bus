@@ -1,4 +1,4 @@
 # Shedule bus (mybus)
 
-Shedule bus mobile app for city
+Shedule bus mobile app for city and district
 
