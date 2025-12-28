@@ -39,8 +39,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { scheduleRepository } from 'src/services/ScheduleRepository'
-import { useAppPrefsStore } from 'src/stores/appPrefsStore'
 import { useArrivalStore } from 'src/stores/arrivalStore'
+import { useAppPrefsStore } from 'src/stores/appPrefsStore'
+import { appPrefsStorage } from 'src/services/AppPrefsStorage'
 
 import DirectionSwitch from 'components/home/DirectionSwitch.vue'
 import ArrivalCircle from 'components/home/ArrivalCircle.vue'
@@ -116,53 +117,31 @@ function onStopSelect(index) {
   isStopPickerOpen.value = false
 }
 
-/**
- * Persist prefs without extra plugins (optional).
- * Remove if you already use pinia persistence plugin.
- */
-const PREFS_KEY = 'my-bus:prefs'
-
-/**
- * @returns {void}
- */
-function loadPrefsFromStorage() {
-  try {
-    const raw = localStorage.getItem(PREFS_KEY)
-    if (!raw) return
-    const data = JSON.parse(raw)
-
-    if (data?.selectedRouteId) prefs.setRoute(String(data.selectedRouteId))
-    if (data?.selectedDirection === 'A' || data?.selectedDirection === 'B') {
-      prefs.setDirection(data.selectedDirection)
-    }
-    if (Number.isFinite(data?.selectedStopIndex)) {
-      prefs.setStopIndex(Number(data.selectedStopIndex))
-    }
-  } catch {
-    // ignore
-  }
-}
-
-/**
- * @returns {void}
- */
-function savePrefsToStorage() {
-  const payload = {
-    selectedRouteId: prefs.selectedRouteId,
-    selectedDirection: prefs.selectedDirection,
-    selectedStopIndex: prefs.selectedStopIndex
-  }
-  localStorage.setItem(PREFS_KEY, JSON.stringify(payload))
-}
 
 let unsubscribe = null
 
 onMounted(async () => {
-  // 1) Restore persisted prefs (optional)
-  loadPrefsFromStorage()
 
-  // 2) Persist changes (optional)
-  unsubscribe = prefs.$subscribe(() => savePrefsToStorage())
+  // 1) Restore persisted prefs (optional)
+  const saved = appPrefsStorage.load()
+  if (saved) {
+    if (saved?.selectedRouteId) prefs.setRoute(String(saved.selectedRouteId))
+    if (saved?.selectedDirection === 'A' || saved?.selectedDirection === 'B') {
+      prefs.setDirection(saved.selectedDirection)
+    }
+    if (Number.isFinite(saved?.selectedStopIndex)) {
+      prefs.setStopIndex(Number(saved.selectedStopIndex))
+    }
+  }
+
+// 2) Persist changes (optional)
+  unsubscribe = prefs.$subscribe(() => {
+    appPrefsStorage.save({
+      selectedRouteId: prefs.selectedRouteId,
+      selectedDirection: prefs.selectedDirection,
+      selectedStopIndex: prefs.selectedStopIndex
+    })
+  })
 
   // 3) Load stops list for UI
   await loadStopsForRoute()
