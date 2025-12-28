@@ -58,11 +58,17 @@ const arrival = useArrivalStore()
  */
 const isStopPickerOpen = ref(false)
 
-/**
- * Stops list for current route (for the dialog + label).
- * @type {import('vue').Ref<string[]>}
- */
-const stops = ref([])
+  /**
+   + * Raw stops data for the current route (A/B).
+   + * @type {import('vue').Ref<any|null>}
+   + */
+  const routeStopsData = ref(null)
+
+ /**
+    * Visible stops list depends on selected direction.
+    * @type {import('vue').Ref<string[]>}
+  */
+    const stops = ref([])
 
 /**
  * Labels for directions (UI)
@@ -104,7 +110,9 @@ const selectedStopName = computed(() => {
  */
 async function loadStopsForRoute() {
   const routeData = await scheduleRepository.getRouteData(prefs.selectedRouteId)
-  stops.value = routeData?.stops?.stops ?? []
+  routeStopsData.value = routeData?.stops ?? null
+  const dir = prefs.selectedDirection
+  stops.value = routeStopsData.value?.directions?.[dir]?.stops ?? []
 }
 
 /**
@@ -161,13 +169,31 @@ onUnmounted(() => {
  * - Any change: recalculate arrival
  */
 watch(
-  () => [prefs.selectedRouteId, prefs.selectedDirection, prefs.selectedStopIndex],
-  async ([routeId], [prevRouteId]) => {
+  () => prefs.selectedRouteId,
+  async (routeId, prevRouteId) => {
     if (routeId !== prevRouteId) {
       await loadStopsForRoute()
-      // ensure selectedStopIndex still valid for new route
       if (prefs.selectedStopIndex >= stops.value.length) prefs.setStopIndex(0)
+      await arrival.recalculate()
     }
+  }
+)
+
+watch(
+  () => prefs.selectedDirection,
+  async (dir, prevDir) => {
+    if (dir !== prevDir) {
+      // Update visible stops for the new direction (A/B)
+      stops.value = routeStopsData.value?.directions?.[dir]?.stops ?? []
+      if (prefs.selectedStopIndex >= stops.value.length) prefs.setStopIndex(0)
+      await arrival.recalculate()
+    }
+  }
+)
+
+watch(
+  () => prefs.selectedStopIndex,
+  async () => {
     await arrival.recalculate()
   }
 )
