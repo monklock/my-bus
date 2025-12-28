@@ -1,46 +1,45 @@
-import { defineStore } from 'pinia'
-
 /**
  * @typedef {"15"|"16"|"80"} RouteId
  * @typedef {"A"|"B"} Direction
+ *
+ * @typedef {Object} AppPrefsSnapshot
+ * @property {RouteId|string} selectedRouteId
+ * @property {Direction} selectedDirection
+ * @property {number} selectedStopIndex
  */
 
-export const useAppPrefsStore = defineStore('appPrefs', {
-  state: () => ({
-    /** @type {RouteId} */
-    selectedRouteId: '15',
-    /** @type {Direction} */
-    selectedDirection: 'A',
-    /** @type {number} */
-    selectedStopIndex: 0
-  }),
+const KEY = 'my-bus:prefs'
 
-  actions: {
-    /**
-     * @param {RouteId|string} routeId
-     * @returns {void}
-     */
-    setRoute(routeId) {
-      this.selectedRouteId = /** @type {any} */ (String(routeId))
-    },
-
-    /**
-     * @param {Direction} direction
-     * @returns {void}
-     */
-    setDirection(direction) {
-      this.selectedDirection = direction
-    },
-
-    /**
-     * @param {number} index
-     * @returns {void}
-     */
-    setStopIndex(index) {
-      this.selectedStopIndex = Number.isFinite(index) ? index : 0
+export class AppPrefsStorage {
+  /**
+   * Load persisted preferences.
+   *
+   * @returns {AppPrefsSnapshot|null}
+   */
+  load() {
+    try {
+      const raw = localStorage.getItem(KEY)
+      if (!raw) return null
+      const data = JSON.parse(raw)
+      return data && typeof data === 'object' ? data : null
+    } catch {
+      return null
     }
-  },
+  }
 
-  // If you already have pinia persistence plugin, enable it here.
-  // persist: true,
-})
+  /**
+   * Save preferences snapshot.
+   *
+   * @param {AppPrefsSnapshot} snapshot
+   * @returns {void}
+   */
+  save(snapshot) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(snapshot))
+    } catch {
+      // ignore
+    }
+  }
+}
+
+export const appPrefsStorage = new AppPrefsStorage()
