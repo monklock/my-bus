@@ -1,44 +1,37 @@
 <template>
-  <q-page class="home-page">
+  <q-page class="home-page flex justify-center min-h-screen">
 
-    <div class="p-4 text-xl font-bold">
-      Tailwind работает
-    </div>
+    <HomeHeader />
 
-    <!-- Direction switch -->
     <DirectionSwitch
-      v-model="selectedDirection"
+      v-model="prefs.selectedDirection"
       :labels="directionLabels"
-      @update:model-value="onDirectionChange"
+      @update:model-value="prefs.setDirection"
     />
 
-    <!-- Main arrival circle -->
     <ArrivalCircle
-      :mode="screenMode"
-      :arrival-label="arrivalLabel"
+      :mode="arrival.screenMode"
+      :arrival-label="arrival.arrivalLabel"
       :caption="circleCaption"
       :route-label="routeLabel"
     />
 
-    <!-- Stop selector -->
     <StopSelector
       :stop-name="selectedStopName"
-      @open="openStopPicker"
+      @open="isStopPickerOpen = true"
     />
 
-    <!-- Route picker -->
-    <RoutePicker
-      v-model="selectedRouteId"
+    <RoutePickers
+      v-model="prefs.selectedRouteId"
       :available="availableRoutes"
-      @update:model-value="onRouteChange"
+      @update:model-value="prefs.setRoute"
     />
 
-    <!-- Stop picker dialog -->
     <StopPickerDialog
       v-model="isStopPickerOpen"
       :stops="stops"
-      :selected-index="selectedStopIndex"
-      :direction="selectedDirection"
+      :selected-index="prefs.selectedStopIndex"
+      :direction="prefs.selectedDirection"
       @select="onStopSelect"
     />
 
@@ -46,93 +39,42 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { scheduleRepository } from 'src/services/ScheduleRepository'
+import { useArrivalStore } from 'src/stores/arrivalStore'
+import { useAppPrefsStore } from 'src/stores/appPrefsStore'
+import { appPrefsStorage } from 'src/services/AppPrefsStorage'
 
-/**
- * UI components
- */
 import DirectionSwitch from 'components/home/DirectionSwitch.vue'
 import ArrivalCircle from 'components/home/ArrivalCircle.vue'
 import StopSelector from 'components/home/StopSelector.vue'
-import RoutePicker from 'components/home/RoutePicker.vue'
+import RoutePickers from 'components/home/RoutePickers.vue'
 import StopPickerDialog from 'components/home/StopPickerDialog.vue'
+import HomeHeader from 'components/home/HomeHeader.vue'
 
-/**
- * -------------------------
- * Runtime state (UI only)
- * -------------------------
- */
-
-/**
- * Selected route (default: 15)
- * @type {import('vue').Ref<string>}
- */
-const selectedRouteId = ref('15')
-
-/**
- * Selected direction (A = from Enakievo)
- * @type {import('vue').Ref<'A' | 'B'>}
- */
-const selectedDirection = ref('A')
-
-/**
- * Selected stop index
- * @type {import('vue').Ref<number>}
- */
-const selectedStopIndex = ref(0)
-
-/**
- * Stops list (loaded later)
- * @type {import('vue').Ref<string[]>}
- */
-const stops = ref([])
-
-/**
- * Screen mode:
- * loading | countdown | tomorrow | no_service
- * @type {import('vue').Ref<string>}
- */
-const screenMode = ref('loading')
+const prefs = useAppPrefsStore()
+const arrival = useArrivalStore()
 
 /**
  * Dialog state
+ * @type {import('vue').Ref<boolean>}
  */
 const isStopPickerOpen = ref(false)
 
-/**
- * -------------------------
- * Derived UI values
- * -------------------------
- */
+  /**
+   + * Raw stops data for the current route (A/B).
+   + * @type {import('vue').Ref<any|null>}
+   + */
+  const routeStopsData = ref(null)
+
+ /**
+    * Visible stops list depends on selected direction.
+    * @type {import('vue').Ref<string[]>}
+  */
+    const stops = ref([])
 
 /**
- * Stop name for UI
- */
-const selectedStopName = computed(() => {
-  return stops.value[selectedStopIndex.value] ?? '—'
-})
-
-/**
- * Label inside circle (MM:SS or "Завтра HH:MM")
- */
-const arrivalLabel = ref('—')
-
-/**
- * Caption under timer
- */
-const circleCaption = computed(() => {
-  return screenMode.value === 'countdown' ? 'МИНУТ' : ''
-})
-
-/**
- * Route label under circle
- */
-const routeLabel = computed(() => {
-  return `Маршрут ${selectedRouteId.value}`
-})
-
-/**
- * Direction labels
+ * Labels for directions (UI)
  */
 const directionLabels = {
   A: 'Енакиево',
@@ -140,85 +82,124 @@ const directionLabels = {
 }
 
 /**
- * Available routes (16/80 can be disabled later)
+ * Available routes (16/80 may show no_service until data is added)
  */
 const availableRoutes = ['15', '16', '80']
 
 /**
- * -------------------------
- * Event handlers
- * -------------------------
+ * Route label under circle
  */
+const routeLabel = computed(() => `Маршрут ${prefs.selectedRouteId}`)
 
 /**
- * Handle direction change
- * @param {'A' | 'B'} dir
+ * Circle caption (UX contract)
  */
-function onDirectionChange(dir) {
-  selectedDirection.value = dir
-  recalculate()
+const circleCaption = computed(() => {
+  return arrival.screenMode === 'countdown' ? 'МИНУТ' : ''
+})
+
+/**
+ * Stop name derived from stops list + selected index.
+ */
+const selectedStopName = computed(() => {
+  return stops.value[prefs.selectedStopIndex] ?? '—'
+})
+
+/**
+ * Load stops list for current route to support stop picker.
+ * This is UI-only; calculations use repository inside arrivalStore.
+ *
+ * @returns {Promise<void>}
+ */
+async function loadStopsForRoute() {
+  const routeData = await scheduleRepository.getRouteData(prefs.selectedRouteId)
+  routeStopsData.value = routeData?.stops ?? null
+  const dir = prefs.selectedDirection
+  stops.value = routeStopsData.value?.directions?.[dir]?.stops ?? []
 }
 
 /**
- * Handle route change
- * @param {string} routeId
- */
-function onRouteChange(routeId) {
-  selectedRouteId.value = routeId
-  recalculate()
-}
-
-/**
- * Open stop picker dialog
- */
-function openStopPicker() {
-  isStopPickerOpen.value = true
-}
-
-/**
- * Handle stop selection
+ * Handle stop selection from dialog.
  * @param {number} index
+ * @returns {void}
  */
 function onStopSelect(index) {
-  selectedStopIndex.value = index
+  prefs.setStopIndex(index)
   isStopPickerOpen.value = false
-  recalculate()
 }
 
-/**
- * -------------------------
- * Core orchestration
- * -------------------------
- */
 
-/**
- * Recalculate arrival state
- * (logic will be implemented later)
- */
-function recalculate() {
-  screenMode.value = 'loading'
+let unsubscribe = null
 
-  // TODO:
-  // - load route data
-  // - calculate arrival time
-  // - set screenMode
-  // - set arrivalLabel
-}
+onMounted(async () => {
 
-/**
- * -------------------------
- * Lifecycle
- * -------------------------
- */
+  // 1) Restore persisted prefs (optional)
+  const saved = appPrefsStorage.load()
+  if (saved) {
+    if (saved?.selectedRouteId) prefs.setRoute(String(saved.selectedRouteId))
+    if (saved?.selectedDirection === 'A' || saved?.selectedDirection === 'B') {
+      prefs.setDirection(saved.selectedDirection)
+    }
+    if (Number.isFinite(saved?.selectedStopIndex)) {
+      prefs.setStopIndex(Number(saved.selectedStopIndex))
+    }
+  }
 
-onMounted(() => {
-  // Initial boot with defaults
-  recalculate()
+// 2) Persist changes (optional)
+  unsubscribe = prefs.$subscribe(() => {
+    appPrefsStorage.save({
+      selectedRouteId: prefs.selectedRouteId,
+      selectedDirection: prefs.selectedDirection,
+      selectedStopIndex: prefs.selectedStopIndex
+    })
+  })
+
+  // 3) Load stops list for UI
+  await loadStopsForRoute()
+
+  // 4) Initial calculation with defaults/restored prefs
+  await arrival.recalculate()
 })
 
 onUnmounted(() => {
-  // TODO: clear timers if added
+  arrival.stopTick()
+  if (typeof unsubscribe === 'function') unsubscribe()
 })
+
+/**
+ * Recalculate whenever any preference changes.
+ * - Route change: reload stops list
+ * - Any change: recalculate arrival
+ */
+watch(
+  () => prefs.selectedRouteId,
+  async (routeId, prevRouteId) => {
+    if (routeId !== prevRouteId) {
+      await loadStopsForRoute()
+      if (prefs.selectedStopIndex >= stops.value.length) prefs.setStopIndex(0)
+      await arrival.recalculate()
+    }
+  }
+)
+
+watch(
+  () => prefs.selectedDirection,
+  async (dir, prevDir) => {
+    if (dir !== prevDir) {
+      // Update visible stops for the new direction (A/B)
+      stops.value = routeStopsData.value?.directions?.[dir]?.stops ?? []
+      if (prefs.selectedStopIndex >= stops.value.length) prefs.setStopIndex(0)
+      await arrival.recalculate()
+    }
+  }
+)
+
+watch(
+  () => prefs.selectedStopIndex,
+  async () => {
+    await arrival.recalculate()
+  }
+)
 </script>
 
 <style scoped>

@@ -5,29 +5,31 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('pages/HomePage.vue'),
+        name: 'home',
+        component: () => import('pages/HomePage.vue')
       },
       {
         path: 'buses',
-        component: () => import('pages/SettingPage.vue'),
+        name: 'buses',
+        component: () => import('pages/BusListPage.vue')
       },
       {
-        path: 'buses',
-        component: () => import('pages/BusListPage.vue'),
+        path: 'taxi',
+        name: 'taxi',
+        component: () => import('pages/TaxiListPage.vue')
       },
       {
-        path: 'buses',
-        component: () => import('pages/TaxiListPage.vue'),
-      },
-    ],
+        path: 'settings',
+        name: 'settings',
+        component: () => import('pages/SettingPage.vue')
+      }
+    ]
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue'),
-  },
+    component: () => import('pages/ErrorNotFound.vue')
+  }
 ]
 
 export default routes
