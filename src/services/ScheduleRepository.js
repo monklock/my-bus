@@ -59,16 +59,27 @@ export class ScheduleRepository {
    * @returns {RouteStops}
    */
   _normalizeStops(raw) {
-    const stops = Array.isArray(raw?.stops) ? raw.stops : []
-    const cumulative = Array.isArray(raw?.cumulative_min) ? raw.cumulative_min : []
-    const total = cumulative.length > 0 ? cumulative[cumulative.length - 1] : 0
+        const dirA = raw?.directions?.A ?? {}
+          const dirB = raw?.directions?.B ?? {}
 
-    return {
-      stops,
-      cumulative_min: cumulative,
-      total_trip_min: total
-    }
-  }
+          const stopsA = Array.isArray(dirA?.stops) ? dirA.stops : []
+          const cumA = Array.isArray(dirA?.cumulative_min) ? dirA.cumulative_min : []
+          const segA = Array.isArray(dirA?.segments_min) ? dirA.segments_min : []
+
+          const stopsB = Array.isArray(dirB?.stops) ? dirB.stops : []
+          const cumB = Array.isArray(dirB?.cumulative_min) ? dirB.cumulative_min : []
+          const segB = Array.isArray(dirB?.segments_min) ? dirB.segments_min : []
+
+          const total = Number(raw?.total_trip_min ?? (cumA.length ? cumA[cumA.length - 1] : 0)) || 0
+
+          return {
+            total_trip_min: total,
+            directions: {
+              A: { stops: stopsA, segments_min: segA, cumulative_min: cumA },
+              B: { stops: stopsB, segments_min: segB, cumulative_min: cumB }
+            }
+        }
+      }
 
   /**
    * Normalize schedule JSON (simple format).
@@ -110,16 +121,13 @@ export class ScheduleRepository {
    * @returns {number}
    */
   getCumulativeToStop(stopsData, direction, stopIndex) {
-    const stopsCount = stopsData.stops.length
-    const cum = stopsData.cumulative_min
-    const total = stopsData.total_trip_min
+     const dir = stopsData?.directions?.[direction]
+     const cum = Array.isArray(dir?.cumulative_min) ? dir.cumulative_min : []
 
-    if (stopIndex < 0 || stopIndex >= stopsCount) return 0
-    if (direction === 'A') return Number(cum[stopIndex] ?? 0)
+     if (!Number.isFinite(stopIndex)) return 0
+     if (stopIndex < 0 || stopIndex >= cum.length) return 0
 
-    const mirroredA = (stopsCount - 1) - stopIndex
-    const valA = Number(cum[mirroredA] ?? 0)
-    return Math.max(0, total - valA)
+     return Number(cum[stopIndex] ?? 0) || 0
   }
 }
 
