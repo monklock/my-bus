@@ -1,6 +1,10 @@
 <template>
   <q-page class="home-page">
 
+    <div class="p-4 text-xl font-bold">
+      Tailwind работает
+    </div>
+
     <!-- Direction switch -->
     <DirectionSwitch
       v-model="selectedDirection"
