@@ -33,7 +33,7 @@ export class ScheduleRepository {
   async getRouteData(routeId) {
     const rid = String(routeId)
 
-    // TODO: replace with dynamic loader when adding 16/80
+    // replace with dynamic loader when adding 16/80
     if (rid !== '15') {
       return null
     }
