@@ -1,5 +1,7 @@
 <template>
-  <q-page class="home-page">
+  <q-page class="home-page flex justify-center min-h-screen">
+
+    <HomeHeader />
 
     <DirectionSwitch
       v-model="prefs.selectedDirection"
@@ -19,7 +21,7 @@
       @open="isStopPickerOpen = true"
     />
 
-    <RoutePicker
+    <RoutePickers
       v-model="prefs.selectedRouteId"
       :available="availableRoutes"
       @update:model-value="prefs.setRoute"
@@ -46,8 +48,9 @@ import { appPrefsStorage } from 'src/services/AppPrefsStorage'
 import DirectionSwitch from 'components/home/DirectionSwitch.vue'
 import ArrivalCircle from 'components/home/ArrivalCircle.vue'
 import StopSelector from 'components/home/StopSelector.vue'
-import RoutePicker from 'components/home/RoutePicker.vue'
+import RoutePickers from 'components/home/RoutePickers.vue'
 import StopPickerDialog from 'components/home/StopPickerDialog.vue'
+import HomeHeader from 'components/home/HomeHeader.vue'
 
 const prefs = useAppPrefsStore()
 const arrival = useArrivalStore()
