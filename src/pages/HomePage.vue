@@ -39,7 +39,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
@@ -55,7 +54,7 @@ import StopSelector from 'components/home/StopSelector.vue'
 import RoutePickers from 'components/home/RoutePickers.vue'
 import StopPickerDialog from 'components/home/StopPickerDialog.vue'
 import HomeHeader from 'components/home/HomeHeader.vue'
-
+  
 import bgUrl from 'src/assets/bg.png'
 
 const prefs = useAppPrefsStore()

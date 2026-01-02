@@ -1,6 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf 44">
     <q-header elevated>
+      <!-- Empty by design: each page has its own header/hero -->
     </q-header>
 
     <q-page-container>
