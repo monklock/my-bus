@@ -1,41 +1,44 @@
 <template>
-  <q-page class="home-page flex justify-center min-h-screen">
+  <div class="relative min-h-screen overflow-hidden">
+    <img :src="bgUrl" alt="" class="absolute inset-0 h-full w-full object-cover" />
+    <div class="relative z-10 min-h-screen flex justify-center">
+      <div class="w-full md:max-w-[430px] px-5 py-6 min-h-screen flex flex-col">
+        <HomeHeader />
 
-    <HomeHeader />
+        <DirectionSwitch
+          v-model="prefs.selectedDirection"
+          :labels="directionLabels"
+          @update:model-value="prefs.setDirection"
+        />
 
-    <DirectionSwitch
-      v-model="prefs.selectedDirection"
-      :labels="directionLabels"
-      @update:model-value="prefs.setDirection"
-    />
+        <ArrivalCircle
+          :mode="arrival.screenMode"
+          :arrival-label="arrival.arrivalLabel"
+          :caption="circleCaption"
+          :route-label="routeLabel"
+        />
 
-    <ArrivalCircle
-      :mode="arrival.screenMode"
-      :arrival-label="arrival.arrivalLabel"
-      :caption="circleCaption"
-      :route-label="routeLabel"
-    />
+        <StopSelector
+          :stop-name="selectedStopName"
+          @open="isStopPickerOpen = true"
+        />
 
-    <StopSelector
-      :stop-name="selectedStopName"
-      @open="isStopPickerOpen = true"
-    />
+        <RoutePickers
+          v-model="prefs.selectedRouteId"
+          :available="availableRoutes"
+          @update:model-value="prefs.setRoute"
+        />
 
-    <RoutePickers
-      v-model="prefs.selectedRouteId"
-      :available="availableRoutes"
-      @update:model-value="prefs.setRoute"
-    />
-
-    <StopPickerDialog
-      v-model="isStopPickerOpen"
-      :stops="stops"
-      :selected-index="prefs.selectedStopIndex"
-      :direction="prefs.selectedDirection"
-      @select="onStopSelect"
-    />
-
-  </q-page>
+        <StopPickerDialog
+          v-model="isStopPickerOpen"
+          :stops="stops"
+          :selected-index="prefs.selectedStopIndex"
+          :direction="prefs.selectedDirection"
+          @select="onStopSelect"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -51,6 +54,8 @@ import StopSelector from 'components/home/StopSelector.vue'
 import RoutePickers from 'components/home/RoutePickers.vue'
 import StopPickerDialog from 'components/home/StopPickerDialog.vue'
 import HomeHeader from 'components/home/HomeHeader.vue'
+  
+import bgUrl from 'src/assets/bg.png'
 
 const prefs = useAppPrefsStore()
 const arrival = useArrivalStore()
@@ -203,9 +208,5 @@ watch(
 </script>
 
 <style scoped>
-.home-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
+
 </style>
