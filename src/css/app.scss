@@ -1,1 +1,116 @@
 // app global css in SCSS form
+
+/* Roboto (local) */
+@font-face {
+  font-family: "Roboto";
+  src: url("/src/assets/fonts/Roboto-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/src/assets/fonts/Roboto-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/src/assets/fonts/Roboto-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Apply to app */
+#q-app {
+  font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* HomePage title */
+h1.home-title {
+  font-size: 28px;
+  line-height: 1.25; /* Tailwind leading-tight */
+  font-weight: 600;  /* Tailwind font-extrabold */
+  color: #00335b;
+  margin: 0; /* чтобы Quasar/браузер не добавлял отступы заголовку */
+}
+
+/* md breakpoint:
+   Если ты оставил md=400px в Tailwind, то логично и тут поставить 400px.
+   Если хочешь "классический md", поставь 768px.
+*/
+@media (min-width: 400px) {
+  h1.home-title {
+    font-size: 32px;
+  }
+}
+
+/* Direction switch wrapper (replaces mt-4 flex items-center justify-between gap-3) */
+.dir-switch {
+  margin-top: 16px;              /* mt-4 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;                     /* gap-3 */
+}
+
+/* Base dir button UI (replaces flex/px/py/text/height/etc.) */
+.dir-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 20px;            /* py-3 px-5 */
+  height: 45px;                  /* h-[45px] */
+
+  color: #ffffff;                /* text-white */
+  font-weight: 600;              /* font-semibold */
+  font-size: 16px;               /* text-[16px] */
+  line-height: 1.25;
+
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+
+  max-width: 100%;
+}
+
+/* A: fully pill-shaped (rounded-[999px]) */
+.dir-btn--a {
+  border-radius: 999px;
+}
+
+/* B: rounded-[18px] */
+.dir-btn--b {
+  border-radius: 18px;
+}
+
+/* Label inside B (replaces -mt-[2px] truncate max-w-full) */
+.dir-btn__label {
+  margin-top: -2px;              /* -mt-[2px] */
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* md breakpoint:
+   ВАЖНО: поставь тут тот md, который ты хочешь реально.
+   Если ты оставлял md=400px — оставь 400.
+   Если хочешь классический md — поставь 768.
+*/
+@media (min-width: 400px) {
+  .dir-btn {
+    height: 50px;                /* md:h-[50px] */
+    font-size: 18px;             /* md:text-[18px] */
+  }
+}
+
+
+
+
