@@ -111,6 +111,85 @@ h1.home-title {
   }
 }
 
+/* 1) сам контейнер табов = твой nav */
+#q-app .bottom-nav.q-tabs {
+  border-radius: 28px;
+  padding: 12px; /* аналог px-3 py-3 */
+}
+
+/* 2) внутренняя "группа" (q-tabs__content) = bottom-nav__group */
+#q-app .bottom-nav .q-tabs__content {
+  border-radius: 22px;
+  padding: 8px; /* аналог px-2 py-2 */
+  gap: 12px;    /* gap-3 */
+}
+
+/* 3) каждый таб = bottom-nav__item */
+#q-app .bottom-nav .q-tab {
+  border-radius: 18px;
+  min-height: auto;
+  padding: 8px 0; /* аналог py-2 */
+}
+
+/* 4) иконка/лейбл — приводим к твоим размерам */
+#q-app .bottom-nav .q-tab__icon {
+  font-size: 26px;
+  width: 26px;
+  height: 26px;
+  opacity: 0.95;
+  margin: 0; /* Quasar иногда даёт отступы */
+}
+
+#q-app .bottom-nav .q-tab__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 4px; /* аналог gap-1 */
+}
+
+/* 5) убираем стандартный индикатор Quasar (полоску снизу) */
+#q-app .bottom-nav .q-tab__indicator {
+  display: none;
+}
+
+/* 6) активное состояние — как твой .bottom-nav__item.is-active */
+#q-app .bottom-nav .q-tab.q-tab--active {
+  color: #fff;
+  background: linear-gradient(
+                  to bottom,
+                  rgba(255, 255, 255, 0.22),
+                  rgba(255, 255, 255, 0.10)
+  );
+  box-shadow:
+          0 10px 20px rgba(0, 60, 120, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.28),
+          inset 0 -8px 16px rgba(0, 40, 90, 0.22);
+}
+
+/* 7) разделители как в твоём варианте (между кнопками) */
+#q-app .bottom-nav .q-tab:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* 8) нажатие — “просадка” */
+#q-app .bottom-nav .q-tab:active {
+  transform: translateY(2px);
+  filter: brightness(0.98);
+}
+
+/* 9) Quasar helper слои не мешают */
+#q-app .bottom-nav .q-focus-helper {
+  border-radius: 18px;
+}
+
 
 
 
