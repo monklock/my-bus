@@ -46,7 +46,7 @@ button.rounded-\[22px\]::after {
 
 /* ===== Direction switch buttons ===== */
 .dir-btn {
-    flex: 1 1 0%;
+    flex: 1% 1% 0;
     min-width: 0;
     padding-top: 10px;
     padding-bottom: 10px;
