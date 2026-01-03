@@ -4,6 +4,7 @@
 body {
     margin: 0;
     background-color: #dde3ea;
+    overflow: hidden;
 }
 
 /* ===== Buttons (shared) ===== */
@@ -101,7 +102,7 @@ button.rounded-\[22px\]::after {
 }
 
 .dir-btn--a::after {
-    right: 18px;
+    right: 12px;
     transform: translateY(-50%) rotate(0deg);
 }
 
