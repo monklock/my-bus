@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Shedule bus</string>
+    <string name="title_activity_main">Shedule bus</string>
+    <string name="package_name">com.delaydelo.mybus</string>
+    <string name="custom_url_scheme">com.delaydelo.mybus</string>
+</resources>

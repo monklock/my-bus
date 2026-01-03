@@ -25,71 +25,56 @@
   font-display: swap;
 }
 
-/* Apply to app */
 #q-app {
   font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
-/* HomePage title */
 h1.home-title {
   font-size: 28px;
-  line-height: 1.25; /* Tailwind leading-tight */
-  font-weight: 600;  /* Tailwind font-extrabold */
+  line-height: 1.25;
+  font-weight: 600;
   color: #00335b;
-  margin: 0; /* чтобы Quasar/браузер не добавлял отступы заголовку */
+  margin: 0 0 .2em;
 }
 
-/* md breakpoint:
-   Если ты оставил md=400px в Tailwind, то логично и тут поставить 400px.
-   Если хочешь "классический md", поставь 768px.
-*/
 @media (min-width: 400px) {
   h1.home-title {
     font-size: 32px;
   }
 }
 
-/* Direction switch wrapper (replaces mt-4 flex items-center justify-between gap-3) */
 .dir-switch {
-  margin-top: 16px;              /* mt-4 */
+  margin-top: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;                     /* gap-3 */
+  gap: 12px;
 }
 
-/* Base dir button UI (replaces flex/px/py/text/height/etc.) */
 .dir-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 12px 20px;            /* py-3 px-5 */
-  height: 45px;                  /* h-[45px] */
-
-  color: #ffffff;                /* text-white */
-  font-weight: 600;              /* font-semibold */
-  font-size: 16px;               /* text-[16px] */
+  padding: 12px 20px;
+  height: 45px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
   line-height: 1.25;
-
   border: 0;
   cursor: pointer;
   user-select: none;
-
   max-width: 100%;
 }
 
-/* A: fully pill-shaped (rounded-[999px]) */
 .dir-btn--a {
   border-radius: 999px;
 }
 
-/* B: rounded-[18px] */
 .dir-btn--b {
   border-radius: 18px;
 }
 
-/* Label inside B (replaces -mt-[2px] truncate max-w-full) */
 .dir-btn__label {
   margin-top: -2px;              /* -mt-[2px] */
   display: block;
@@ -99,18 +84,138 @@ h1.home-title {
   text-overflow: ellipsis;
 }
 
-/* md breakpoint:
-   ВАЖНО: поставь тут тот md, который ты хочешь реально.
-   Если ты оставлял md=400px — оставь 400.
-   Если хочешь классический md — поставь 768.
-*/
 @media (min-width: 400px) {
   .dir-btn {
-    height: 50px;                /* md:h-[50px] */
-    font-size: 18px;             /* md:text-[18px] */
+    height: 50px;
+    font-size: 18px;
   }
 }
 
+.bottom-nav {
+   margin: 1em;
+}
+
+#q-app .bottom-nav .q-tab {
+  border-radius: 18px;
+  min-height: auto;
+  padding:  0;
+}
+
+#q-app .bottom-nav .q-tab__icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.95;
+  margin: 0;
+}
+
+#q-app .bottom-nav .q-tab__label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+#q-app .bottom-nav .q-tab__indicator {
+  display: none;
+}
+
+#q-app .bottom-nav .q-tab.q-tab--active {
+  color: #fff;
+  background: linear-gradient(
+                  to bottom,
+                  rgba(255, 255, 255, 0.22),
+                  rgba(255, 255, 255, 0.10)
+  );
+  box-shadow:
+          0 10px 20px rgba(0, 60, 120, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.28),
+          inset 0 -8px 16px rgba(0, 40, 90, 0.22);
+}
+
+#q-app .bottom-nav .q-tab:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+#q-app .bottom-nav .q-tab:active {
+  transform: translateY(2px);
+  filter: brightness(0.98);
+}
+
+#q-app .bottom-nav .q-focus-helper {
+  border-radius: 18px;
+}
+
+#q-app .bottom-nav .q-tabs__content {
+  border-radius: 22px;
+  padding: 4px;
+  gap: 12px;
+}
 
 
+/* Route buttons wrapper
+   replaces: mt-6 md:mt-5 flex items-center justify-between gap-3 */
+.route-buttons {
+  margin-top: 24px;              /* mt-6 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;                     /* gap-3 */
+}
+
+@media (min-width: 400px) {
+  .route-buttons {
+    margin-top: 30px;
+  }
+}
+
+/* Base route button
+   replaces: flex-1 rounded-[22px] text-[20px] md:text-[22px]
+             font-bold py-2.5 h-[45px] md:h-[50px] */
+.route-btn {
+  flex: 1% 1% 0;
+
+  height: 45px;
+  padding: 10px 0;               /* py-2.5 */
+
+  border-radius: 22px;
+
+  color: #ffffff;
+  font-weight: 700;              /* font-bold */
+  font-size: 20px;
+  line-height: 1;
+
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* md breakpoint (синхронизирован с твоим md=400px) */
+@media (min-width: 400px) {
+  .route-btn {
+    height: 50px;
+    font-size: 22px;
+  }
+}
+
+/* Optional color overrides (если нужен не градиент) */
+.route-btn {
+  background-color: #00a8ff;
+}
+
+.route-btn--alt {
+  background-color: #00b3ff;
+}
 
