@@ -16,7 +16,7 @@ export default defineConfig((/* ctx */) => {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: [
       'tailwind.css',
-    //  'app.scss', // или твой основной файл
+      'app.scss', // или твой основной файл
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras

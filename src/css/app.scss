@@ -1,37 +1,12 @@
 // app global css in SCSS form
 
-/* Roboto (local) */
-@font-face {
-  font-family: "Roboto";
-  src: url("/src/assets/fonts/Roboto-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto";
-  src: url("/src/assets/fonts/Roboto-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roboto";
-  src: url("/src/assets/fonts/Roboto-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 #q-app {
   font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 h1.home-title {
   font-size: 28px;
-  line-height: 1.25;
+  line-height: 1.1;
   font-weight: 600;
   color: #00335b;
   margin: 0 0 .2em;
@@ -177,32 +152,26 @@ h1.home-title {
   }
 }
 
-/* Base route button
-   replaces: flex-1 rounded-[22px] text-[20px] md:text-[22px]
-             font-bold py-2.5 h-[45px] md:h-[50px] */
+
 .route-btn {
   flex: 1% 1% 0;
-
   height: 45px;
-  padding: 10px 0;               /* py-2.5 */
-
+  padding: 10px 0;
   border-radius: 22px;
-
   color: #ffffff;
-  font-weight: 700;              /* font-bold */
+  font-weight: 700;
   font-size: 20px;
   line-height: 1;
-
   border: 0;
   cursor: pointer;
   user-select: none;
-
+  width: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* md breakpoint (синхронизирован с твоим md=400px) */
+
 @media (min-width: 400px) {
   .route-btn {
     height: 50px;
@@ -210,7 +179,6 @@ h1.home-title {
   }
 }
 
-/* Optional color overrides (если нужен не градиент) */
 .route-btn {
   background-color: #00a8ff;
 }
@@ -219,3 +187,122 @@ h1.home-title {
   background-color: #00b3ff;
 }
 
+
+
+/* ===== Arrival timer block ===== */
+
+/* section: mt-6 flex justify-start */
+.arrival {
+  margin-top: 24px; /* mt-6 */
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* timer-wrapper relative w/h + breakpoints */
+.arrival__timer {
+  position: relative;
+  width: 190px;
+  height: 190px;
+}
+
+/* xs: 360px, sm: 390px, md: 400px (по твоим screens) */
+@media (min-width: 360px) {
+  .arrival__timer {
+    width: 215px;
+    height: 215px;
+  }
+}
+@media (min-width: 390px) {
+  .arrival__timer {
+    width: 215px;
+    height: 215px;
+  }
+}
+@media (min-width: 400px) {
+  .arrival__timer {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+/* svg absolute inset-0 w-full h-full pointer-events-none */
+.arrival__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* inner circle: absolute inset-[30px] rounded-full bg-gradient... */
+.arrival__inner {
+  position: absolute;
+  inset: 30px;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom, #e9f2ff 0%, #cde5ff 100%);
+}
+
+/* second inner gradient: absolute inset-[20px] ... */
+.arrival__inner2 {
+  position: absolute;
+  inset: 20px;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom, #f3f7ff 0%, #d9e8ff 100%);
+}
+
+/* content: absolute inset-0 flex flex-col items-center justify-center text-center */
+.arrival__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* time label: font-extrabold text-[36px] sm:text-[40px] tracking-tight text-[#1d4ed8] */
+.arrival__time {
+  font-weight: 800;
+  font-size: 36px;
+  letter-spacing: -0.02em; /* tracking-tight */
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+@media (min-width: 390px) {
+  .arrival__time {
+    font-size: 40px; /* sm:text-[40px] */
+  }
+}
+
+/* unit label: mt-1 text-[13px] sm:text-[14px] font-semibold uppercase text-[#1d4ed8]/80 */
+.arrival__unit {
+  margin-top: 4px; /* mt-1 */
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(29, 78, 216, 0.8); /* #1d4ed8 / 80 */
+  line-height: 1.2;
+}
+
+@media (min-width: 390px) {
+  .arrival__unit {
+    font-size: 14px; /* sm:text-[14px] */
+  }
+}
+
+/* route label: mt-1 text-[14px] sm:text-[15px] font-medium text-[#003b7a]/75 */
+.arrival__route {
+  margin-top: 4px; /* mt-1 */
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(0, 59, 122, 0.75); /* #003b7a / 75 */
+  line-height: 1.2;
+}
+
+@media (min-width: 390px) {
+  .arrival__route {
+    font-size: 15px; /* sm:text-[15px] */
+  }
+}
