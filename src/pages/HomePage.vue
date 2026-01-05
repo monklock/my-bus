@@ -119,9 +119,13 @@ const selectedStopName = computed(() => {
  */
 async function loadStopsForRoute() {
   const routeData = await scheduleRepository.getRouteData(prefs.selectedRouteId)
-  routeStopsData.value = routeData?.stops ?? null
-  const dir = prefs.selectedDirection
-  stops.value = routeStopsData.value?.directions?.[dir]?.stops ?? []
+    const dir = prefs.selectedDirection
+    stops.value = routeData?.stops?.directions?.[dir]?.stops ?? []
+
+    // Ensure selectedStopIndex is always valid
+        if (prefs.selectedStopIndex >= stops.value.length) {
+        prefs.setStopIndex(0)
+     }
 }
 
 /**
@@ -178,13 +182,12 @@ onUnmounted(() => {
  * - Any change: recalculate arrival
  */
 watch(
-  () => prefs.selectedRouteId,
-  async (routeId, prevRouteId) => {
-    if (routeId !== prevRouteId) {
-      await loadStopsForRoute()
-      if (prefs.selectedStopIndex >= stops.value.length) prefs.setStopIndex(0)
+  () => [prefs.selectedRouteId, prefs.selectedDirection, prefs.selectedStopIndex],
+      async ([routeId, dir], [prevRouteId, prevDir]) => {
+         if (routeId !== prevRouteId || dir !== prevDir) {
+        await loadStopsForRoute()
+      }
       await arrival.recalculate()
-    }
   }
 )
 
