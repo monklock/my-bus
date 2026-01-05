@@ -100,7 +100,7 @@ button.rounded-\[22px\]::after {
 }
 
 .dir-btn {
-  flex: 1 1 0%;
+  flex: 1% 1% 0;
   min-width: 0;
   padding: 12px 20px; // py-3 px-5
   height: 45px;
@@ -214,7 +214,7 @@ button.rounded-\[22px\]::after {
 }
 
 .route-btn {
-  flex: 1 1 0%;
+  flex: 1% 1% 0;
 
   height: 45px;
   padding: 10px 0; // py-2.5
