@@ -2,7 +2,7 @@
   <div class="relative min-h-screen overflow-hidden">
     <img :src="bgUrl" alt="" class="absolute inset-0 h-full w-full object-cover" />
     <div class="relative z-10 min-h-screen flex justify-center">
-      <div class="w-full md:max-w-[430px] px-5 py-6 min-h-screen flex flex-col">
+      <div class="w-full px-5 py-8 min-h-screen flex flex-col mt-7">
         <HomeHeader />
 
         <DirectionSwitch
@@ -16,6 +16,7 @@
           :arrival-label="arrival.arrivalLabel"
           :caption="circleCaption"
           :route-label="routeLabel"
+          :progress="arrival.progress"
         />
 
         <StopSelector
@@ -54,7 +55,7 @@ import StopSelector from 'components/home/StopSelector.vue'
 import RoutePickers from 'components/home/RoutePickers.vue'
 import StopPickerDialog from 'components/home/StopPickerDialog.vue'
 import HomeHeader from 'components/home/HomeHeader.vue'
-  
+
 import bgUrl from 'src/assets/bg.png'
 
 const prefs = useAppPrefsStore()

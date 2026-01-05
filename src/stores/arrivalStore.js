@@ -3,6 +3,7 @@ import { scheduleRepository } from 'src/services/ScheduleRepository'
 import { arrivalCalculator } from 'src/domain/arrival/ArrivalCalculator'
 import { useAppPrefsStore } from 'src/stores/appPrefsStore'
 
+
 /**
  * @typedef {"loading"|"countdown"|"tomorrow"|"no_service"} ScreenMode
  */
@@ -21,6 +22,10 @@ export const useArrivalStore = defineStore('arrival', {
     dayTypeUsed: null,
     /** @type {string|null} */
     error: null,
+    /** @type {number|null} */
+    progress: null,
+    /** @type {number|null} */
+    _startSecondsLeft: null,
 
     /** @type {number|null} */
     _tickId: null
@@ -35,6 +40,8 @@ export const useArrivalStore = defineStore('arrival', {
       this.stopTick()
       this.screenMode = 'loading'
       this.error = null
+      this.progress = null
+      this._startSecondsLeft = null
 
       const prefs = useAppPrefsStore()
 
@@ -44,6 +51,8 @@ export const useArrivalStore = defineStore('arrival', {
         this.arrivalAtIso = null
         this.arrivalLabel = 'Нет рейсов'
         this.secondsLeft = null
+        this.progress = null
+        this._startSecondsLeft = null
         this.dayTypeUsed = null
         this.error = 'Route data is not available.'
         return
@@ -74,12 +83,15 @@ export const useArrivalStore = defineStore('arrival', {
         this.screenMode = 'tomorrow'
         this.arrivalLabel = this._formatTomorrowLabel(result.arrivalAtIso)
         this.secondsLeft = null
+        this.progress = null
+        this._startSecondsLeft = null
         return
       }
 
       // countdown
       this.screenMode = 'countdown'
       this._updateCountdownLabel()
+      this._startSecondsLeft = this.secondsLeft
       this.startTick()
     },
 
@@ -124,6 +136,8 @@ export const useArrivalStore = defineStore('arrival', {
 
       this.secondsLeft = diffSec
       this.arrivalLabel = this._formatMmSs(diffSec)
+      const start = Number(this._startSecondsLeft ?? diffSec) || diffSec
+      this.progress = start > 0 ? Math.min(1, Math.max(0, 1 - diffSec / start)) : 0
     },
 
     /**
