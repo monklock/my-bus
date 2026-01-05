@@ -50,6 +50,9 @@ export const useArrivalStore = defineStore('arrival', {
         this.screenMode = 'no_service'
         this.arrivalAtIso = null
         this.arrivalLabel = 'Нет рейсов'
+        this.arrivalLabel = String(prefs.selectedRouteId) === '15'
+        ? 'Нет данных'
+        : 'Маршрут пока не добавлен'
         this.secondsLeft = null
         this.progress = null
         this._startSecondsLeft = null
@@ -74,7 +77,7 @@ export const useArrivalStore = defineStore('arrival', {
 
       if (result.mode === 'no_service' || !result.arrivalAtIso) {
         this.screenMode = 'no_service'
-        this.arrivalLabel = 'Нет рейсов'
+        this.arrivalLabel = 'Рейсов нет'
         this.secondsLeft = null
         return
       }
