@@ -1,57 +1,198 @@
 // app global css in SCSS form
+// my-bus: legacy UI primitives extracted from prototype and normalized for Quasar + mobile webview
 
+// -----------------------------------------------------------------------------
+// Breakpoints (aligned with Tailwind v4 defaults + custom xs/sm)
+// -----------------------------------------------------------------------------
+$bp-xs: 360px;
+$bp-sm: 390px;
+$bp-md: 768px;
+
+// -----------------------------------------------------------------------------
+// Mixins
+// -----------------------------------------------------------------------------
+@mixin up($bp) {
+  @media (min-width: $bp) {
+    @content;
+  }
+}
+
+@mixin retina2 {
+  @media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) {
+    @content;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Base
+// -----------------------------------------------------------------------------
 #q-app {
   font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+// -----------------------------------------------------------------------------
+// Typography
+// -----------------------------------------------------------------------------
 h1.home-title {
-  font-size: 28px;
-  line-height: 1.1;
+  font-size: 26px;
+  line-height: 1.2;
   font-weight: 600;
   color: #00335b;
-  margin: 0 0 .2em;
+  margin: 0 0 0.2em;
 }
 
-@media (min-width: 400px) {
+@include up($bp-md) {
   h1.home-title {
-    font-size: 32px;
+    font-size: 28px;
   }
 }
 
+// -----------------------------------------------------------------------------
+// Buttons (shared)
+// -----------------------------------------------------------------------------
+.btn-main,
+.btn-secondary {
+  background: linear-gradient(to bottom, #3cc3ff 0%, #00a8ff 55%, #0094e0 100%);
+  box-shadow:
+          0 18px 34px rgba(0, 136, 220, 0.55),
+          0 6px 10px rgba(0, 0, 0, 0.18),
+          inset 0 2px 0 rgba(255, 255, 255, 0.45),
+          inset 0 -3px 6px rgba(0, 60, 120, 0.35);
+  transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease,
+          filter 0.15s ease;
+}
+
+.btn-main:active,
+.btn-secondary:active {
+  transform: translateY(2px);
+  box-shadow:
+          0 8px 18px rgba(0, 136, 220, 0.45),
+          inset 0 3px 6px rgba(0, 0, 0, 0.25),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+  filter: brightness(0.97);
+}
+
+// Glossy inner highlight for rounded prototype buttons
+button.rounded-\[22px\] {
+  position: relative;
+}
+
+button.rounded-\[22px\]::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+// -----------------------------------------------------------------------------
+// Direction switch
+// -----------------------------------------------------------------------------
 .dir-switch {
-  margin-top: 16px;
+  margin-top: 16px; // mt-4
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 12px; // gap-3
 }
 
 .dir-btn {
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: 15px 20px; // py-3 px-5
+
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 20px;
-  height: 45px;
+
   color: #ffffff;
   font-weight: 600;
   font-size: 16px;
   line-height: 1.25;
-  border: 0;
-  cursor: pointer;
-  user-select: none;
-  max-width: 100%;
+
+  position: relative;
+  overflow: hidden;
+
+  transition:
+          flex-grow 0.22s ease,
+          transform 0.15s ease,
+          filter 0.15s ease;
+}
+
+@include up($bp-md) {
+  .dir-btn {
+    font-size: 18px;
+  }
 }
 
 .dir-btn--a {
   border-radius: 999px;
+  padding-right: 3.25rem; // space for right arrow
 }
 
 .dir-btn--b {
   border-radius: 18px;
+  padding-left: 3.25rem; // space for left arrow
+}
+
+.dir-btn.is-active {
+  flex-grow: 1.8; // active wider (keep as-is)
+}
+
+.dir-btn:not(.is-active) {
+  flex-grow: 1;
+}
+
+.dir-btn.is-inactive {
+  filter: saturate(0.98) brightness(0.99);
+  opacity: 0.95;
+}
+
+.dir-btn--a::after,
+.dir-btn--b::before {
+  content: "➜";
+  position: absolute;
+  top: 50%;
+  opacity: 0;
+  transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 20px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.dir-btn--a::after {
+  right: 18px;
+  transform: translateY(-50%) rotate(0deg);
+}
+
+.dir-btn--b::before {
+  left: 8px;
+  transform: translateY(-50%) rotate(180deg);
+  transform-origin: center;
+}
+
+.dir-btn--a.is-active::after {
+  opacity: 1;
+  transform: translateY(-50%) rotate(0deg) translateX(0);
+}
+
+.dir-btn--b.is-active::before {
+  opacity: 1;
+  transform: translateY(-50%) rotate(180deg) translateX(0);
 }
 
 .dir-btn__label {
-  margin-top: -2px;              /* -mt-[2px] */
+  margin-top: -2px;
   display: block;
   max-width: 100%;
   white-space: nowrap;
@@ -59,58 +200,153 @@ h1.home-title {
   text-overflow: ellipsis;
 }
 
-@media (min-width: 400px) {
-  .dir-btn {
+// -----------------------------------------------------------------------------
+// Route buttons (15/16/80)
+// -----------------------------------------------------------------------------
+.route-buttons {
+  margin-top: 2.1em; // mt-6
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.route-btn {
+  flex: 1 1 0%;
+  padding: 14px 0; // py-2.5
+  border-radius: 22px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  border: 0;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@include up($bp-md) {
+  .route-buttons {
+    margin-top: 20px; // md:mt-5
+  }
+
+  .route-btn {
     height: 50px;
-    font-size: 18px;
+    font-size: 22px;
   }
 }
 
+// Optional flat color overrides (use only if you don't want gradient from btn-secondary)
+// .route-btn { background-color: #00a8ff; }
+// .route-btn--alt { background-color: #00b3ff; }
+
+// -----------------------------------------------------------------------------
+// Timer ring (shared)
+// -----------------------------------------------------------------------------
+.timer-ring {
+  transform-origin: center;
+  transform: rotate(-90deg);
+  transition: stroke-dashoffset 0.25s linear;
+}
+
+.timer-wrapper {
+  position: relative;
+}
+
+.timer-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: 9999px;
+  z-index: 0;
+  background: radial-gradient(
+                  circle at 35% 30%,
+                  rgba(255, 255, 255, 0.7) 0%,
+                  rgba(255, 255, 255, 0.42) 35%,
+                  rgba(255, 255, 255, 0.26) 60%,
+                  rgba(255, 255, 255, 0.18) 100%
+  );
+  box-shadow:
+          0 18px 30px rgba(0, 0, 0, 0.18),
+          0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.timer-wrapper::after {
+  content: "";
+  position: absolute;
+  inset: 26px;
+  border-radius: 9999px;
+  z-index: 1;
+  box-shadow:
+          inset 0 12px 18px rgba(0, 0, 0, 0.14),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.timer-inner-shadow {
+  z-index: 2;
+  box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.65),
+          inset 0 -10px 18px rgba(0, 50, 110, 0.12),
+          0 10px 18px rgba(0, 0, 0, 0.14);
+  background: linear-gradient(to bottom, #f2f7ff 0%, #dbe9ff 100%);
+}
+
+.timer-inner-shadow > div.absolute.inset-\[20px\] {
+  background: linear-gradient(to bottom, #ffffff 0%, #e3efff 100%);
+  box-shadow:
+          inset 0 10px 16px rgba(0, 0, 0, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+#timer-ring {
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.16));
+}
+
+.timer-wrapper svg circle[stroke="rgba(255,255,255,0.55)"] {
+  stroke: rgba(255, 255, 255, 0.42);
+}
+
+// -----------------------------------------------------------------------------
+// Bottom navigation
+// -----------------------------------------------------------------------------
 .bottom-nav {
-   margin: 1em;
+  /*
+  background: linear-gradient(to bottom, #19b6ff 0%, #00a8ff 55%, #0091e3 100%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+          0 26px 44px rgba(0, 120, 200, 0.55),
+          inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(6px);
+  padding: 0px; */
+  background: linear-gradient(to bottom, #3cc3ff 0%, #00a8ff 55%, #0094e0 100%);
+  box-shadow: 0 18px 34px rgba(0, 136, 220, 0.55), 0 6px 10px rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.45), inset 0 -3px 6px rgba(0, 60, 120, 0.35);
 }
 
-#q-app .bottom-nav .q-tab {
-  border-radius: 18px;
-  min-height: auto;
-  padding:  0;
-}
-
-#q-app .bottom-nav .q-tab__icon {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
-  opacity: 0.95;
-  margin: 0;
-}
-
-#q-app .bottom-nav .q-tab__label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1;
-  margin-top: 4px;
-}
-
-#q-app .bottom-nav .q-tab__indicator {
+.q-tab--active .q-tab__indicator {
+  opacity: 0 !important;
   display: none;
 }
 
-#q-app .bottom-nav .q-tab.q-tab--active {
-  color: #fff;
-  background: linear-gradient(
-                  to bottom,
-                  rgba(255, 255, 255, 0.22),
-                  rgba(255, 255, 255, 0.10)
-  );
+.bottom-nav__group {
+  background: linear-gradient(to bottom, #3cc3ff 0%, #00a8ff 55%, #0094e0 100%);
   box-shadow:
-          0 10px 20px rgba(0, 60, 120, 0.25),
-          inset 0 1px 0 rgba(255, 255, 255, 0.28),
-          inset 0 -8px 16px rgba(0, 40, 90, 0.22);
+          inset 0 1px 0 rgba(255, 255, 255, 0.2),
+          inset 0 -6px 14px rgba(0, 40, 90, 0.22);
 }
 
-#q-app .bottom-nav .q-tab:not(:last-child)::after {
+.bottom-nav__item {
+  position: relative;
+  border-radius: 18px;
+  color: rgba(255, 255, 255, 0.86);
+  transition:
+          transform 0.15s ease,
+          filter 0.15s ease,
+          background 0.15s ease;
+}
+
+.bottom-nav__item:not(:last-child)::after {
   content: "";
   position: absolute;
   right: -10px;
@@ -120,112 +356,96 @@ h1.home-title {
   background: rgba(255, 255, 255, 0.22);
 }
 
-#q-app .bottom-nav .q-tab:active {
+.bottom-nav__item.is-active {
+  color: #ffffff;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.1));
+  box-shadow:
+          0 10px 20px rgba(0, 60, 120, 0.25),
+          inset 0 1px 0 rgba(255, 255, 255, 0.28),
+          inset 0 -8px 16px rgba(0, 40, 90, 0.22);
+}
+
+.bottom-nav__item:active {
   transform: translateY(2px);
   filter: brightness(0.98);
 }
 
-#q-app .bottom-nav .q-focus-helper {
-  border-radius: 18px;
+.bottom-nav__icon {
+  width: 26px;
+  height: 26px;
+  opacity: 0.95;
 }
 
-#q-app .bottom-nav .q-tabs__content {
-  border-radius: 22px;
-  padding: 4px;
-  gap: 12px;
-}
-
-
-/* Route buttons wrapper
-   replaces: mt-6 md:mt-5 flex items-center justify-between gap-3 */
-.route-buttons {
-  margin-top: 24px;              /* mt-6 */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;                     /* gap-3 */
-}
-
-@media (min-width: 400px) {
-  .route-buttons {
-    margin-top: 30px;
-  }
-}
-
-
-.route-btn {
-  flex: 1% 1% 0;
-  height: 45px;
-  padding: 10px 0;
-  border-radius: 22px;
-  color: #ffffff;
+.bottom-nav__label {
+  font-size: 11px;
   font-weight: 700;
-  font-size: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   line-height: 1;
-  border: 0;
-  cursor: pointer;
-  user-select: none;
-  width: 110px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
+// Retina refinements: thinner separators/borders on high-density screens
+@include retina2 {
+  .bottom-nav,
+  .bottom-nav__group {
+   /* border-width: 0.5px;*/
+  }
 
-@media (min-width: 400px) {
-  .route-btn {
-    height: 50px;
-    font-size: 22px;
+  .bottom-nav__item:not(:last-child)::after {
+    width: 0.5px;
   }
 }
 
-.route-btn {
-  background-color: #00a8ff;
-}
-
-.route-btn--alt {
-  background-color: #00b3ff;
-}
-
-
-
-/* ===== Arrival timer block ===== */
-
-/* section: mt-6 flex justify-start */
+// -----------------------------------------------------------------------------
+// Arrival timer block (extracted from component)
+// -----------------------------------------------------------------------------
 .arrival {
-  margin-top: 24px; /* mt-6 */
+  margin-top: 24px; // mt-6
   display: flex;
   justify-content: flex-start;
 }
 
-/* timer-wrapper relative w/h + breakpoints */
 .arrival__timer {
   position: relative;
   width: 190px;
   height: 190px;
 }
 
-/* xs: 360px, sm: 390px, md: 400px (по твоим screens) */
-@media (min-width: 360px) {
+@include up($bp-xs) {
   .arrival__timer {
-    width: 215px;
-    height: 215px;
+    width: 225px;
+    height: 225px;
+    font-size: 26px;
   }
 }
-@media (min-width: 390px) {
+
+@include up($bp-sm) {
   .arrival__timer {
-    width: 215px;
-    height: 215px;
+    width: 225px;
+    height: 225px;
+    font-size: 28px;
+  }
+
+  .arrival__time {
+    font-size: 28px;
+  }
+
+  .arrival__unit {
+    font-size: 14px;
+  }
+
+  .arrival__route {
+    font-size: 15px;
   }
 }
-@media (min-width: 400px) {
+
+@include up($bp-md) {
   .arrival__timer {
     width: 220px;
     height: 220px;
   }
 }
 
-/* svg absolute inset-0 w-full h-full pointer-events-none */
 .arrival__svg {
   position: absolute;
   inset: 0;
@@ -234,7 +454,6 @@ h1.home-title {
   pointer-events: none;
 }
 
-/* inner circle: absolute inset-[30px] rounded-full bg-gradient... */
 .arrival__inner {
   position: absolute;
   inset: 30px;
@@ -242,7 +461,6 @@ h1.home-title {
   background: linear-gradient(to bottom, #e9f2ff 0%, #cde5ff 100%);
 }
 
-/* second inner gradient: absolute inset-[20px] ... */
 .arrival__inner2 {
   position: absolute;
   inset: 20px;
@@ -250,7 +468,6 @@ h1.home-title {
   background: linear-gradient(to bottom, #f3f7ff 0%, #d9e8ff 100%);
 }
 
-/* content: absolute inset-0 flex flex-col items-center justify-center text-center */
 .arrival__content {
   position: absolute;
   inset: 0;
@@ -261,48 +478,52 @@ h1.home-title {
   text-align: center;
 }
 
-/* time label: font-extrabold text-[36px] sm:text-[40px] tracking-tight text-[#1d4ed8] */
 .arrival__time {
   font-weight: 800;
-  font-size: 36px;
-  letter-spacing: -0.02em; /* tracking-tight */
+  font-size: 28px;
+  letter-spacing: -0.02em;
   color: #1d4ed8;
   line-height: 1;
 }
 
-@media (min-width: 390px) {
-  .arrival__time {
-    font-size: 40px; /* sm:text-[40px] */
-  }
-}
-
-/* unit label: mt-1 text-[13px] sm:text-[14px] font-semibold uppercase text-[#1d4ed8]/80 */
 .arrival__unit {
-  margin-top: 4px; /* mt-1 */
+  margin-top: 4px;
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
-  color: rgba(29, 78, 216, 0.8); /* #1d4ed8 / 80 */
+  color: rgba(29, 78, 216, 0.8);
   line-height: 1.2;
 }
 
-@media (min-width: 390px) {
-  .arrival__unit {
-    font-size: 14px; /* sm:text-[14px] */
-  }
-}
-
-/* route label: mt-1 text-[14px] sm:text-[15px] font-medium text-[#003b7a]/75 */
 .arrival__route {
-  margin-top: 4px; /* mt-1 */
+  margin-top: 4px;
   font-size: 14px;
   font-weight: 500;
-  color: rgba(0, 59, 122, 0.75); /* #003b7a / 75 */
+  color: rgba(0, 59, 122, 0.75);
   line-height: 1.2;
 }
 
-@media (min-width: 390px) {
-  .arrival__route {
-    font-size: 15px; /* sm:text-[15px] */
-  }
+.q-tab {
+  padding: 4px;
+}
+
+.q-tab__icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+.q-tab__label {
+  font-size: 9px;
+  line-height: 1.715em;
+  font-weight: 700;
+}
+
+.q-footer {
+  width: 90%;
+  margin: 0 auto 1.5em;
+}
+
+.q-footer a {
+  text-decoration: none !important;
 }
