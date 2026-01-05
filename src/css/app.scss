@@ -34,8 +34,8 @@ $bp-md: 768px;
 // Typography
 // -----------------------------------------------------------------------------
 h1.home-title {
-  font-size: 28px;
-  line-height: 1.1;
+  font-size: 26px;
+  line-height: 1.2;
   font-weight: 600;
   color: #00335b;
   margin: 0 0 0.2em;
@@ -43,7 +43,7 @@ h1.home-title {
 
 @include up($bp-md) {
   h1.home-title {
-    font-size: 32px;
+    font-size: 28px;
   }
 }
 
@@ -100,10 +100,9 @@ button.rounded-\[22px\]::after {
 }
 
 .dir-btn {
-  flex: 1% 1% 0;
+  flex: 1 1 0%;
   min-width: 0;
-  padding: 12px 20px; // py-3 px-5
-  height: 45px;
+  padding: 15px 20px; // py-3 px-5
 
   border: 0;
   cursor: pointer;
@@ -130,7 +129,6 @@ button.rounded-\[22px\]::after {
 @include up($bp-md) {
   .dir-btn {
     font-size: 18px;
-    height: 50px;
   }
 }
 
@@ -206,7 +204,7 @@ button.rounded-\[22px\]::after {
 // Route buttons (15/16/80)
 // -----------------------------------------------------------------------------
 .route-buttons {
-  margin-top: 24px; // mt-6
+  margin-top: 2.1em; // mt-6
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -214,22 +212,16 @@ button.rounded-\[22px\]::after {
 }
 
 .route-btn {
-  flex: 1% 1% 0;
-
-  height: 45px;
-  padding: 10px 0; // py-2.5
-
+  flex: 1 1 0%;
+  padding: 14px 0; // py-2.5
   border-radius: 22px;
-
   color: #ffffff;
   font-weight: 700;
   font-size: 20px;
   line-height: 1;
-
   border: 0;
   cursor: pointer;
   user-select: none;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,18 +312,25 @@ button.rounded-\[22px\]::after {
 // Bottom navigation
 // -----------------------------------------------------------------------------
 .bottom-nav {
+  /*
   background: linear-gradient(to bottom, #19b6ff 0%, #00a8ff 55%, #0091e3 100%);
   border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow:
           0 26px 44px rgba(0, 120, 200, 0.55),
           inset 0 1px 0 rgba(255, 255, 255, 0.28);
   backdrop-filter: blur(6px);
-  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  padding: 0px; */
+  background: linear-gradient(to bottom, #3cc3ff 0%, #00a8ff 55%, #0094e0 100%);
+  box-shadow: 0 18px 34px rgba(0, 136, 220, 0.55), 0 6px 10px rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.45), inset 0 -3px 6px rgba(0, 60, 120, 0.35);
+}
+
+.q-tab--active .q-tab__indicator {
+  opacity: 0 !important;
+  display: none;
 }
 
 .bottom-nav__group {
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(to bottom, #3cc3ff 0%, #00a8ff 55%, #0094e0 100%);
   box-shadow:
           inset 0 1px 0 rgba(255, 255, 255, 0.2),
           inset 0 -6px 14px rgba(0, 40, 90, 0.22);
@@ -389,7 +388,7 @@ button.rounded-\[22px\]::after {
 @include retina2 {
   .bottom-nav,
   .bottom-nav__group {
-    border-width: 0.5px;
+   /* border-width: 0.5px;*/
   }
 
   .bottom-nav__item:not(:last-child)::after {
@@ -414,19 +413,21 @@ button.rounded-\[22px\]::after {
 
 @include up($bp-xs) {
   .arrival__timer {
-    width: 215px;
-    height: 215px;
+    width: 225px;
+    height: 225px;
+    font-size: 26px;
   }
 }
 
 @include up($bp-sm) {
   .arrival__timer {
-    width: 215px;
-    height: 215px;
+    width: 225px;
+    height: 225px;
+    font-size: 28px;
   }
 
   .arrival__time {
-    font-size: 40px;
+    font-size: 28px;
   }
 
   .arrival__unit {
@@ -479,7 +480,7 @@ button.rounded-\[22px\]::after {
 
 .arrival__time {
   font-weight: 800;
-  font-size: 36px;
+  font-size: 28px;
   letter-spacing: -0.02em;
   color: #1d4ed8;
   line-height: 1;
@@ -502,15 +503,25 @@ button.rounded-\[22px\]::after {
   line-height: 1.2;
 }
 
+.q-tab {
+  padding: 4px;
+}
+
+.q-tab__icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
 .q-tab__label {
-  font-size: 11px;
+  font-size: 9px;
   line-height: 1.715em;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .q-footer {
   width: 90%;
-  margin: 0 auto 1em;
+  margin: 0 auto 1.5em;
 }
 
 .q-footer a {
