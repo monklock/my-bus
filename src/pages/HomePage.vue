@@ -61,21 +61,6 @@ import bgUrl from 'src/assets/bg.png'
 const prefs = useAppPrefsStore()
 const arrival = useArrivalStore()
 
-
-/**
- * Normalize stop name for matching.
- *
- * @param {string} name
- * @returns {string}
- */
-function normalizeStopName(name) {
-  return String(name)
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-}
-
-
 /**
  * Dialog state
  * @type {import('vue').Ref<boolean>}
@@ -133,22 +118,14 @@ const selectedStopName = computed(() => {
  * @returns {Promise<void>}
  */
 async function loadStopsForRoute() {
-  const prevStopName = stops.value[prefs.selectedStopIndex] ?? ''
   const routeData = await scheduleRepository.getRouteData(prefs.selectedRouteId)
-  const dir = prefs.selectedDirection
-  stops.value = routeData?.stops?.directions?.[dir]?.stops ?? []
-    // Try to keep the same stop by name when direction changes.
-      if (stops.value.length > 0 && prevStopName) {
-        const target = normalizeStopName(prevStopName)
-          const foundIndex = stops.value.findIndex((s) => normalizeStopName(s) === target)
-          if (foundIndex >= 0) {
-            prefs.setStopIndex(foundIndex)
-            return
-          }
-      }
+    const dir = prefs.selectedDirection
+    stops.value = routeData?.stops?.directions?.[dir]?.stops ?? []
 
-    // Fallback: clamp index
-      if (prefs.selectedStopIndex >= stops.value.length) prefs.setStopIndex(0)
+    // Ensure selectedStopIndex is always valid
+        if (prefs.selectedStopIndex >= stops.value.length) {
+        prefs.setStopIndex(0)
+     }
 }
 
 /**

@@ -522,46 +522,8 @@ button.rounded-\[22px\]::after {
 .q-footer {
   width: 90%;
   margin: 0 auto 1.5em;
-  z-index: 0;
 }
 
 .q-footer a {
   text-decoration: none !important;
 }
-
-.drop-shadow {
-  --tw-drop-shadow: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
-.stop-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 14px;
-  margin-bottom: 10px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: 0 14px 22px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.65);
-  transition: transform 0.15s ease, filter 0.15s ease;
-}
-.stop-item__chip {
-  padding: 8px 10px;
-  border-radius: 14px;
-  background: linear-gradient(to bottom, #1cb6ff, #00a8ff);
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 12px;
-  box-shadow: 0 14px 22px rgba(0, 140, 230, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-}
-
-.stop-sheet {
-  background-color: rgb(255 255 255 / 0.2);
-  backdrop-filter: blur(24px);
-  background-clip: border-box;
-  background-image: linear-gradient(rgba(0, 168, 255, 0.35) 0%, rgba(255, 255, 255, 0.18) 35%, rgba(0, 120, 210, 0.28) 100%)
- }
-
