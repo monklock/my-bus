@@ -141,6 +141,7 @@ watch(
       return
     }
     await nextTick()
+    searchEl.value?.focus?.()
   }
 )
 
