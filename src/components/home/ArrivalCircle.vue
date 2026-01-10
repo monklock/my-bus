@@ -21,6 +21,7 @@
           stroke="url(#timerGradient)"
           stroke-width="12"
           stroke-linecap="round"
+          :style="ringStyle"
         ></circle>
       </svg>
 
@@ -28,15 +29,76 @@
         <div class="arrival__inner2"></div>
 
         <div class="arrival__content">
-          <div id="timer-text" class="arrival__time">01:00</div>
-          <div class="arrival__unit">МИНУТ</div>
-          <div class="arrival__route">Маршрут 16</div>
+          <div id="timer-text" class="arrival__time">{{ timeText }}</div>
+          <div v-if="unitText" class="arrival__unit">{{ unitText }}</div>
+          <div class="arrival__route">{{ routeText }}</div>
         </div>
       </div>
     </div>
   </section>
 </template>
 
+<style scoped>
+.timer-ring {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.35s linear;
+}
+</style>
+
 <script setup>
-//
+import { computed } from 'vue'
+
+const props = defineProps({
+  /** @type {"loading"|"countdown"|"tomorrow"|"no_service"} */
+  mode: { type: String, required: true },
+
+  /** @type {string} */
+  arrivalLabel: { type: String, required: true },
+
+  /** @type {string} */
+  caption: { type: String, default: '' },
+
+  /** @type {string} */
+  routeLabel: { type: String, default: '' },
+
+  /** @type {number|null} */
+  progress: { type: Number, default: null }
+})
+
+const timeText = computed(() => {
+  if (props.mode === 'loading') return '…'
+  return props.arrivalLabel || '—'
+})
+
+const unitText = computed(() => {
+  return props.mode === 'countdown' ? (props.caption || '') : ''
+})
+
+const routeText = computed(() => {
+  return props.routeLabel || '—'
+})
+
+const R = 110
+const CIRC = 2 * Math.PI * R
+
+const ringStyle = computed(() => {
+  // If progress is not available or not in countdown, hide ring nicely
+  if (props.mode !== 'countdown' || props.progress === null || !Number.isFinite(props.progress)) {
+    return {
+      strokeDasharray: `${CIRC}`,
+      strokeDashoffset: `${CIRC}`
+    }
+  }
+
+  const p = Math.min(1, Math.max(0, props.progress))
+  // 0 -> empty, 1 -> full
+  const offset = CIRC * (1 - p)
+
+  return {
+    strokeDasharray: `${CIRC}`,
+    strokeDashoffset: `${offset}`
+  }
+})
 </script>
+
